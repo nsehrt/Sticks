@@ -2,6 +2,8 @@
 #include "gametime.h"
 #include <vector>
 #include <iostream>
+#include <random>
+#include <algorithm>
 
 struct Point
 {
@@ -86,6 +88,7 @@ int main()
     std::vector<Point> points{};
     std::vector<Stick> sticks{};
     GameTime gt{};
+    auto rng = std::default_random_engine{};
 
     sf::CircleShape pointShape{};
     pointShape.setRadius(pRadius);
@@ -258,13 +261,15 @@ int main()
                 {
                     const auto beforePos = p.Position;
                     p.Position += p.Position - p.PrevPosition;
-                    p.Position += sf::Vector2f{ 0.0,1.0f } * 9.81f * 200.0f * gt.getDelta().asSeconds() * gt.getDelta().asSeconds();
+                    p.Position += sf::Vector2f{ 0.0,1.0f } * 9.81f * 150.0f * gt.getDelta().asSeconds() * gt.getDelta().asSeconds();
                     p.PrevPosition = beforePos;
                 }
             }
 
             for(auto i = 0; i < sIter; i++)
             {
+                std::shuffle(sticks.begin(), sticks.end(), rng);
+
                 for(auto& s : sticks)
                 {
                     const auto stickCenter = (s.PointA->Position + s.PointB->Position) / 2.0f;
